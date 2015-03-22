@@ -1,0 +1,32 @@
+Welcome to the Unimock library!
+
+Please note that this library demands C++14 or later.
+
+To just install the library you type the following.
+$ cmake .
+$ make install
+
+To install the library in another directory than default, type the following.
+$ cmake .
+$ make install DESTDIR=/your/own/path/here
+
+If you want to run the unit tests, we recommend to create a build directory
+first. Run the unit tests with the following commands.
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make test
+
+
+Tested compilers:
+GCC v4.9.2
+
+
+More information can be found at the following site.
+http://unimock.org
+
+We hope you'll enjoy the library!
+
+/ The Unimock Team
+
+

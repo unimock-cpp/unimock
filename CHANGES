@@ -1,0 +1,23 @@
+________________________________________________________________________________
+
+Unimock v0.1.0
+________________________________________________________________________________
+
+Changes:
+   - None
+
+New Features:
+   - Interface mock
+   - Functor mock
+   - Function mock
+   - Call recorder
+   - Default conversion dereferencing pointers
+   - Minimal conversion copying raw pointers
+   - Result set result representation
+
+Fixes:
+   - None
+
+Known issues:
+   - None
+
