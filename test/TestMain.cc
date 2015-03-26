@@ -15,6 +15,7 @@ void testCallRecorder();
 void testFunctionMock();
 void testFunctorMock();
 void testMock();
+void testResultSetFactory();
 
 
 int main()
@@ -23,6 +24,7 @@ int main()
    testFunctionMock();
    testFunctorMock();
    testMock();
+   testResultSetFactory();
 
    return 0;
 }

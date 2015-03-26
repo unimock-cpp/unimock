@@ -28,6 +28,7 @@ add_executable( TestRunner EXCLUDE_FROM_ALL
    FunctionMockTest.cc
    FunctorMockTest.cc
    MockTest.cc
+   ResultSetFactoryTest.cc
    TestMain.cc )
 
 add_test( build_test_runner ${CMAKE_BUILD_TOOL} TestRunner )
