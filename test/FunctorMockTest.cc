@@ -17,7 +17,7 @@ ________________________________________________________________________________
 
 #include "unimock/FunctorMock.hh"
 #include "unimock/CallRecorder.hh"
-#include "unimock/ResultSet.hh"
+#include "unimock/ResultSetFactory.hh"
 
 
 namespace
@@ -42,7 +42,7 @@ void testFunctorMock()
 
       mock( 10, "ten" );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 10 );
       require( resultSet.get<0, 1>() == "ten" );
    }
@@ -55,7 +55,7 @@ void testFunctorMock()
 
       mock( i, str );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == i );
       require( resultSet.get<0, 1>() == str );
    }
@@ -67,7 +67,7 @@ void testFunctorMock()
 
       mock( uip );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -78,7 +78,7 @@ void testFunctorMock()
 
       mock( std::move( uip ) );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -89,7 +89,7 @@ void testFunctorMock()
 
       mock( uip );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -100,7 +100,7 @@ void testFunctorMock()
 
       mock( std::move( uip ) );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -110,7 +110,7 @@ void testFunctorMock()
 
       setFunction( mock );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 45 );
       require( resultSet.get<0, 1>() == "fortyfive" );
    }
@@ -125,11 +125,11 @@ void testFunctorMock()
       setFunction( mock1 );
       setFunction( mock2 );
 
-      auto resultSet = makeResultSet( mock1.find() );
+      auto resultSet = makeResultSet( mock1 );
       require( resultSet.size() == 1 );
       require( resultSet.get<0, 0>() == 45 );
       require( resultSet.get<0, 1>() == "fortyfive" );
-      auto resultSet2 = makeResultSet( mock2.find() );
+      auto resultSet2 = makeResultSet( mock2 );
       require( resultSet2.size() == 1 );
       require( resultSet2.get<0, 0>() == 45 );
       require( resultSet2.get<0, 1>() == "fortyfive" );

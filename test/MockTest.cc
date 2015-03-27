@@ -17,7 +17,7 @@ ________________________________________________________________________________
 #include "Test.hh"
 
 #include "unimock/Mock.hh"
-#include "unimock/ResultSet.hh"
+#include "unimock/ResultSetFactory.hh"
 #include "unimock/MinimalConversionPolicy.hh"
 
 
@@ -128,7 +128,7 @@ void testMock()
 
       mock.setInt( 3 );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setInt ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setInt );
       require( resultSet.get<0, 0>() == 3 );
    }
 
@@ -141,10 +141,10 @@ void testMock()
       auto value = mock.getInt();
       mock.getIntByRef( intVal );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setInt ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setInt );
       require( resultSet.get<0, 0>() == 3 );
       require( value == 42 );
-      auto resultSet2 = makeResultSet( mock.find( &SomeClassI::getIntByRef ) );
+      auto resultSet2 = makeResultSet( mock, &SomeClassI::getIntByRef );
       require( resultSet2.get<0, 0>() == 23 );
       require( intVal == 45 );
    }
@@ -156,7 +156,7 @@ void testMock()
 
       mock.setClass( &someClass );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setClass ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setClass );
       require( resultSet.get<0, 0>() == someClass.getInt() );
    }
 
@@ -166,7 +166,7 @@ void testMock()
 
       mock.setIntConst( 10 );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setIntConst ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setIntConst );
       require( resultSet.get<0, 0>() == 10 );
    }
 
@@ -178,7 +178,7 @@ void testMock()
       mock.setIntPtr( ip );
       delete ip;
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setIntPtr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setIntPtr );
       require( resultSet.get<0, 0>() == 15 );
    }
 
@@ -188,7 +188,7 @@ void testMock()
 
       mock.setStrPtr( "string literal" );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setStrPtr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setStrPtr );
       require( resultSet.get<0, 0>() == "string literal" );
    }
 
@@ -199,8 +199,7 @@ void testMock()
 
       mock.setConstRefUPtr( uip );
 
-      auto resultSet =
-         makeResultSet( mock.find( &SomeClassI::setConstRefUPtr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setConstRefUPtr );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -211,7 +210,7 @@ void testMock()
 
       mock.setUPtr( std::move( uip ) );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setUPtr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setUPtr );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -222,7 +221,7 @@ void testMock()
 
       mock.setSPtr( sip );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setSPtr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setSPtr );
       require( *resultSet.get<0, 0>() == 34 );
    }
 
@@ -236,11 +235,10 @@ void testMock()
       mock.setIntPtr( ip );
       mock.setConstRefUPtr( uip );
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::setIntPtr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::setIntPtr );
       require( resultSet.get<0, 0>() == ip );
       delete ip;
-      auto resultSet2 =
-         makeResultSet( mock.find( &SomeClassI::setConstRefUPtr ) );
+      auto resultSet2 = makeResultSet( mock, &SomeClassI::setConstRefUPtr );
       require( resultSet2.get<0, 0>() == uirp );
    }
 
@@ -271,12 +269,12 @@ void testMock()
       mock1.setInt( 3 );
       mock2.setInt( 5 );
 
-      auto resultSet = makeResultSet( recorder->find( &SomeClassI::setInt ) );
+      auto resultSet = makeResultSet( recorder, &SomeClassI::setInt );
       require( resultSet.get<0, 0>() == 3 );
       require( resultSet.get<1, 0>() == 5 );
-      auto resultSet2 = makeResultSet( mock1.find( &SomeClassI::setInt ) );
+      auto resultSet2 = makeResultSet( mock1, &SomeClassI::setInt );
       require( resultSet2.get<0, 0>() == 3 );
-      auto resultSet3 = makeResultSet( mock2.find( &SomeClassI::setInt ) );
+      auto resultSet3 = makeResultSet( mock2, &SomeClassI::setInt );
       require( resultSet3.get<0, 0>() == 5 );
    }
 
@@ -289,11 +287,10 @@ void testMock()
       mock1.setInt( 3 );
       mock2.setInt( 5 );
 
-      auto resultSet = makeResultSet( recorder->find( &SomeClassI::setInt ) );
+      auto resultSet = makeResultSet( recorder, &SomeClassI::setInt );
       require( resultSet.get<0, 0>() == 3 );
       require( resultSet.get<1, 0>() == 5 );
-      auto resultSet2 = makeResultSet(
-         recorder->find( mock2.getID(), &SomeClassI::setInt ) );
+      auto resultSet2 = makeResultSet( recorder, mock2, &SomeClassI::setInt );
       require( resultSet2.get<0, 0>() == 5 );
    }
 
@@ -306,10 +303,10 @@ void testMock()
       auto s1 = mock.getStr();
       auto s2 = constMock.getStr();
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::getStr ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::getStr );
       require( resultSet.size() == 1 );
       require( s1 == "non-const" );
-      auto resultSet2 = makeResultSet( constMock.find( &SomeClassI::getStr ) );
+      auto resultSet2 = makeResultSet( constMock, &SomeClassI::getStr );
       require( resultSet2.size() == 1 );
       require( s2 == "const" );
    }
@@ -323,7 +320,7 @@ void testMock()
       mock.set( &SomeClassI::getInt, []{ return 52; } );
       auto iValue2 = mock.getInt();
 
-      auto resultSet = makeResultSet( mock.find( &SomeClassI::getInt ) );
+      auto resultSet = makeResultSet( mock, &SomeClassI::getInt );
       require( resultSet.size() == 2 );
       require( iValue1 == 42 );
       require( iValue2 == 52 );

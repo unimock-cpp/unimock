@@ -17,7 +17,7 @@ ________________________________________________________________________________
 
 #include "unimock/FunctionMock.hh"
 #include "unimock/CallRecorder.hh"
-#include "unimock/ResultSet.hh"
+#include "unimock/ResultSetFactory.hh"
 
 
 namespace
@@ -44,7 +44,7 @@ void testFunctionMock()
 
       setFnc( &mock.function );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 44 );
       require( resultSet.get<0, 1>() == "fortyfour" );
    }
@@ -55,7 +55,7 @@ void testFunctionMock()
 
       setFnc( &mock.function );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 44 );
       require( resultSet.get<0, 1>() == "fortyfour" );
    }
@@ -67,7 +67,7 @@ void testFunctionMock()
 
       mock.function( uip );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -78,7 +78,7 @@ void testFunctionMock()
 
       mock.function( std::move( uip ) );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -89,7 +89,7 @@ void testFunctionMock()
 
       mock.function( uip );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -100,7 +100,7 @@ void testFunctionMock()
 
       mock.function( std::move( uip ) );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -110,7 +110,7 @@ void testFunctionMock()
 
       setFunction( mock.function );
 
-      auto resultSet = makeResultSet( mock.find() );
+      auto resultSet = makeResultSet( mock );
       require( resultSet.get<0, 0>() == 45 );
       require( resultSet.get<0, 1>() == "fortyfive" );
    }
@@ -128,7 +128,7 @@ void testFunctionMock()
       // NOTE! The call recorder can't differentiate between different mocks
       // since the static member function doesn't know to which object it
       // belongs.
-      auto resultSet = makeResultSet( mock1.find() );
+      auto resultSet = makeResultSet( mock1 );
       require( resultSet.get<0, 0>() == 45 );
       require( resultSet.get<0, 1>() == "fortyfive" );
       require( resultSet.get<1, 0>() == 45 );
