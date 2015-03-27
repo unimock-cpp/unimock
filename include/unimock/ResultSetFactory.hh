@@ -30,10 +30,10 @@ namespace unimock
 /// non-member template function is provided as a convenience function to remove
 /// the need to provide the tuple parameter types.
 ///
-/// Note! This method will find all function mocks' static member functions with
-/// the same signature. Since the static member function is static, it can't
-/// record to which function mock instance it belongs. Currently there is no
-/// workaround for this deficiency.
+/// Note! This function will find all function mocks' static member functions
+/// with the same signature. Since the static member function is static, it
+/// can't record to which function mock instance it belongs. Currently there is
+/// no workaround for this deficiency.
 ///
 /// \param[in] functionMock
 ///   The function mock to get the call history from.
@@ -65,7 +65,7 @@ auto makeResultSet(
 /// non-member template function is provided as a convenience function to remove
 /// the need to provide the tuple parameter types.
 ///
-/// Note. This method isn't const correct. It should take the mock by a const
+/// Note. This function isn't const correct. It should take the mock by a const
 /// reference since this function doesn't change anything in the mock. See an
 /// explanation in Mock and its find method.
 ///
@@ -139,7 +139,7 @@ auto makeResultSet(
 ///
 /// This function works the same as the other factory function.
 ///
-/// Note. This method isn't const correct. It should take the mock by a const
+/// Note. This function isn't const correct. It should take the mock by a const
 /// reference since this function doesn't change anything in the mock. See an
 /// explanation in Mock and its find method.
 ///
