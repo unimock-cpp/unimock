@@ -19,6 +19,20 @@ ________________________________________________________________________________
 namespace unimock
 {
 
+template<typename R, typename... Parameters, class ConversionPolicy>
+auto makeResultSet(
+   const FunctionMock<R(Parameters...), ConversionPolicy>& functionMock )
+{
+   return makeResultSet( functionMock.find() );
+}
+
+template<typename R, typename... Parameters, class ConversionPolicy>
+auto makeResultSet(
+   const FunctorMock<R(Parameters...), ConversionPolicy>& functorMock )
+{
+   return makeResultSet( functorMock.find() );
+}
+
 template<class TI, class ConversionPolicy, typename R, typename... Parameters>
 auto makeResultSet(
    Mock<TI, ConversionPolicy>& mock,

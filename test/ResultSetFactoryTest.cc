@@ -13,6 +13,8 @@ ________________________________________________________________________________
 
 #include "Test.hh"
 
+#include "unimock/FunctionMock.hh"
+#include "unimock/FunctorMock.hh"
 #include "unimock/Mock.hh"
 #include "unimock/CallRecorder.hh"
 #include "unimock/ResultSetFactory.hh"
@@ -20,6 +22,11 @@ ________________________________________________________________________________
 
 namespace
 {
+
+void setFnc( void(*functionPtr)(int, std::string) )
+{
+   (*functionPtr)( 42, "fortytwo" );
+}
 
 class SomeClassI
 {
@@ -50,6 +57,28 @@ public:
 void testResultSetFactory()
 {
    using namespace unimock;
+
+   test( "Provide a mock function" );
+   {
+      FunctionMock<void(int, std::string)> mock;
+
+      setFnc( &mock.function );
+
+      auto resultSet = makeResultSet( mock );
+      require( resultSet.get<0, 0>() == 42 );
+      require( resultSet.get<0, 1>() == "fortytwo" );
+   }
+
+   test( "Call a mock functor" );
+   {
+      FunctorMock<void(int, std::string)> mock;
+
+      mock( 10, "ten" );
+
+      auto resultSet = makeResultSet( mock );
+      require( resultSet.get<0, 0>() == 10 );
+      require( resultSet.get<0, 1>() == "ten" );
+   }
 
    test( "Find two methods overloaded on const, with mock and method" );
    {

@@ -15,12 +15,49 @@ ________________________________________________________________________________
 
 #include <memory>    // std::shared_ptr
 
+#include "unimock/FunctionMock.hh"
+#include "unimock/FunctorMock.hh"
 #include "unimock/Mock.hh"
 #include "unimock/CallRecorder.hh"
 
 
 namespace unimock
 {
+
+/// Creates a ResultSet from a function mock.
+///
+/// Since the constructor of ResultSet can't be a template method, this
+/// non-member template function is provided as a convenience function to remove
+/// the need to provide the tuple parameter types.
+///
+/// Note! This method will find all function mocks' static member functions with
+/// the same signature. Since the static member function is static, it can't
+/// record to which function mock instance it belongs. Currently there is no
+/// workaround for this deficiency.
+///
+/// \param[in] functionMock
+///   The function mock to get the call history from.
+///
+/// \exception Exception neutral.
+///
+template<typename R, typename... Parameters, class ConversionPolicy>
+auto makeResultSet(
+   const FunctionMock<R(Parameters...), ConversionPolicy>& functionMock );
+
+/// Creates a ResultSet from a functor mock.
+///
+/// Since the constructor of ResultSet can't be a template method, this
+/// non-member template function is provided as a convenience function to remove
+/// the need to provide the tuple parameter types.
+///
+/// \param[in] functorMock
+///   The functor mock to get the call history from.
+///
+/// \exception Exception neutral.
+///
+template<typename R, typename... Parameters, class ConversionPolicy>
+auto makeResultSet(
+   const FunctorMock<R(Parameters...), ConversionPolicy>& functorMock );
 
 /// Creates a ResultSet from a mock and a method in its interface.
 ///
