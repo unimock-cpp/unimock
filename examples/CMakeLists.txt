@@ -10,14 +10,5 @@
 #_______________________________________________________________________________
 
 
-cmake_minimum_required( VERSION 2.8 )
+add_subdirectory( ChefRobot )
 
-project( unimock )
-
-# The library is header-only so we only install the include files.
-install( DIRECTORY include/unimock DESTINATION include )
-
-enable_testing()
-
-add_subdirectory( test )
-add_subdirectory( examples )
