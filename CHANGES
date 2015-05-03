@@ -1,5 +1,23 @@
 ________________________________________________________________________________
 
+Unimock v0.2.2
+________________________________________________________________________________
+
+Changes:
+   - None
+
+New Features:
+   - None
+
+Fixes:
+   - Fixed defect when recording two methods of the same signature.
+
+Known issues:
+   - None
+
+
+________________________________________________________________________________
+
 Unimock v0.2.1
 ________________________________________________________________________________
 
@@ -14,7 +32,7 @@ Fixes:
 
 Known issues:
    - CRITICAL: In the same interface, all member functions with the same
-     signature are treated equal when extracting a result set. 
+     signature are compared equal when extracting a result set. 
 
 
 ________________________________________________________________________________
