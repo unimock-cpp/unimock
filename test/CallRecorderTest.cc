@@ -35,6 +35,8 @@ public:
    virtual void setIntStrConst( int i, std::string s ) const = 0;
    virtual void setInt( int i ) = 0;
    virtual void setInt( int i ) const = 0;
+   virtual void setDouble( double d ) = 0;
+   virtual void setAnotherDouble( double d ) = 0;
    virtual void setIntPtr( int* ip ) = 0;
    virtual void setConstRefUPtr( const std::unique_ptr<int>& uip ) = 0;
    virtual void setUPtr( std::unique_ptr<int> uip ) = 0;
@@ -48,6 +50,8 @@ public:
    virtual void setIntStrConst( int i, std::string s ) const {}
    virtual void setInt( int i ) {}
    virtual void setInt( int i ) const {}
+   virtual void setDouble( double d ) {}
+   virtual void setAnotherDouble( double d ) {}
    virtual void setIntPtr( int* ip ) {};
    virtual void setConstRefUPtr( const std::unique_ptr<int>& uip ) {}
    virtual void setUPtr( std::unique_ptr<int> uip ) {}
@@ -147,6 +151,21 @@ void testCallRecorder()
       auto resultSet2 = makeResultSet( recorder.find(
          static_cast<void(SomeClassI::*)(int) const>( &SomeClassI::setInt ) ) );
       require( resultSet2.get<0, 0>() == 5 );
+   }
+
+   test( "Record two method calls with the same signature" );
+   {
+      CallRecorder<> recorder;
+
+      recorder.record( FiniteID(), &SomeClassI::setDouble, 10.0 );
+      recorder.record( FiniteID(), &SomeClassI::setAnotherDouble, 20.0 );
+
+      auto resultSet =
+         makeResultSet( recorder.find( &SomeClassI::setDouble ) );
+      require( resultSet.size() == 1 );
+      auto resultSet2 =
+         makeResultSet( recorder.find( &SomeClassI::setAnotherDouble ) );
+      require( resultSet2.size() == 1 );
    }
 
    test( "Record a method call with a converted argument" );

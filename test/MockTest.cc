@@ -29,6 +29,7 @@ class SomeClassI
 public:
    virtual ~SomeClassI() {}
    virtual void setInt( int i ) = 0;
+   virtual void setAnotherInt( int i ) = 0;
    virtual void setIntConst( int i ) const = 0;
    virtual int getInt() const = 0;
    virtual void getIntByRef( int& ir ) = 0;
@@ -52,6 +53,8 @@ public:
    using unimock::Mock<SomeClassI, ConversionPolicy>::call;
 
    virtual void setInt( int i ) { call( &SomeClassI::setInt, i ); }
+   virtual void setAnotherInt( int i )
+      { call( &SomeClassI::setAnotherInt, i ); }
    virtual void setIntConst( int i ) const
       { call( &SomeClassI::setIntConst, i ); }
    virtual int getInt() const { return call( &SomeClassI::getInt ); }
@@ -79,6 +82,7 @@ class SomeClassStub : public SomeClassI
 {
 public:
    virtual void setInt( int i ) {}
+   virtual void setAnotherInt( int i ) {}
    virtual void setIntConst( int i ) const {}
    virtual int getInt() const { return 42; }
    virtual void getIntByRef( int& ir ) { ir = 45; }
@@ -158,6 +162,19 @@ void testMock()
 
       auto resultSet = makeResultSet( mock, &SomeClassI::setClass );
       require( resultSet.get<0, 0>() == someClass.getInt() );
+   }
+
+   test( "Call two mock methods with the same signature" );
+   {
+      SomeClassMock mock;
+
+      mock.setInt( 3 );
+      mock.setAnotherInt( 5 );
+
+      auto resultSet = makeResultSet( mock, &SomeClassI::setInt );
+      require( resultSet.size() == 1 );
+      auto resultSet2 = makeResultSet( mock, &SomeClassI::setAnotherInt );
+      require( resultSet2.size() == 1 );
    }
 
    test( "Call a mock const method" );
