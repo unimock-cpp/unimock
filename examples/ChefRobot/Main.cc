@@ -107,6 +107,26 @@ int main()
       require( resultSet.get<0, 0>() < 8000 );
    }
 
+   // Second most important thing is to make sure the robot doesn't use peanuts
+   // since people could be very allergic to that.
+   test( "Peanuts not used" );
+   {
+      // Given: The equipment and the robot using it.
+      RefrigeratorMock refrigeratorMock;
+      StoveMock stoveMock;
+      ChefRobot swedishChef( refrigeratorMock, stoveMock );
+
+      // When: The robot prepares the dishes.
+      swedishChef.prepareStarter();
+      swedishChef.prepareMainCourse();
+      swedishChef.prepareDessert();
+
+      // Then: Make sure the robot doesn't use peanuts in any of the dishes.
+      auto resultSet =
+         makeResultSet( refrigeratorMock, &IRefrigerator::getPeanuts );
+      require( resultSet.size() == 0 );
+   }
+
    // Another thing all of us could be interested in is the level of spiciness.
    // To make it bit interesting we actually check it from the dish itself
    // instead of monitoring the used ingredients.
