@@ -46,11 +46,13 @@ void CallRecorder<ConversionPolicy>::record(
    R(*functionPtr)(FncParameters...),
    Parameters&&... arguments )
 {
-   // We must use an uninitialized FiniteID since non-member functions don't
-   // belong to any object.
+   // We only store a function pointer so we set the other information to
+   // uninitialized and nullptr.
    record_<FncParameters...>(
-      FiniteID(),
       typeid( decltype( functionPtr ) ),
+      functionPtr,
+      FiniteID(),
+      static_cast<void(VoidType_::*)()>( nullptr ),
       std::forward<Parameters>( arguments )... );
 }
 
@@ -61,9 +63,12 @@ void CallRecorder<ConversionPolicy>::record(
    R(T::*methodPtr)(FncParameters...),
    Parameters&&... arguments )
 {
+   // We store a method pointer so we set the function pointer to nullptr.
    record_<FncParameters...>(
-      objectID,
       typeid( decltype( methodPtr ) ),
+      static_cast<void(*)()>( nullptr ),
+      objectID,
+      methodPtr,
       std::forward<Parameters>( arguments )... );
 }
 
@@ -75,8 +80,10 @@ void CallRecorder<ConversionPolicy>::record(
    Parameters&&... arguments )
 {
    record_<FncParameters...>(
-      objectID,
       typeid( decltype( methodPtr ) ),
+      static_cast<void(*)()>( nullptr ),
+      objectID,
+      methodPtr,
       std::forward<Parameters>( arguments )... );
 }
 
@@ -85,11 +92,13 @@ template<typename R, typename... Parameters>
 auto CallRecorder<ConversionPolicy>::find(
    R(*functionPtr)(Parameters...) ) const
 {
-   // Non-member functions don't belong to an object so we use an uninitialized
-   // FiniteID to say that we don't use object ID as a search criteria.
+   // We only search for a function pointer so we set the other search criteria
+   // to uninitialized and nullptr.
    return find_<Parameters...>(
+      std::type_index( typeid( decltype( functionPtr ) ) ),
+      functionPtr,
       FiniteID(),
-      std::type_index( typeid( decltype( functionPtr ) ) ) );
+      static_cast<void(VoidType_::*)()>( nullptr ) );
 }
 
 template<class ConversionPolicy>
@@ -97,11 +106,13 @@ template<typename R, class T, typename... Parameters>
 auto CallRecorder<ConversionPolicy>::find(
    R(T::*methodPtr)(Parameters...) ) const
 {
-   // We use an uninitialized FiniteID to say that we don't search with the
-   // object ID as a search criteria.
+   // We use an uninitialized FiniteID to say that we don't use the object ID as
+   // a search criteria, i.e. we search for the method pointer in any object.
    return find_<Parameters...>(
+      std::type_index( typeid( decltype( methodPtr ) ) ),
+      static_cast<void(*)()>( nullptr ),
       FiniteID(),
-      std::type_index( typeid( decltype( methodPtr ) ) ) );
+      methodPtr );
 }
 
 template<class ConversionPolicy>
@@ -110,8 +121,10 @@ auto CallRecorder<ConversionPolicy>::find(
    R(T::*methodPtr)(Parameters...) const ) const
 {
    return find_<Parameters...>(
+      std::type_index( typeid( decltype( methodPtr ) ) ),
+      static_cast<void(*)()>( nullptr ),
       FiniteID(),
-      std::type_index( typeid( decltype( methodPtr ) ) ) );
+      methodPtr );
 }
 
 template<class ConversionPolicy>
@@ -121,8 +134,10 @@ auto CallRecorder<ConversionPolicy>::find(
    R(T::*methodPtr)(Parameters...) ) const
 {
    return find_<Parameters...>(
+      std::type_index( typeid( decltype( methodPtr ) ) ),
+      static_cast<void(*)()>( nullptr ),
       objectID,
-      std::type_index( typeid( decltype( methodPtr ) ) ) );
+      methodPtr );
 }
 
 template<class ConversionPolicy>
@@ -132,22 +147,35 @@ auto CallRecorder<ConversionPolicy>::find(
    R(T::*methodPtr)(Parameters...) const ) const
 {
    return find_<Parameters...>(
+      std::type_index( typeid( decltype( methodPtr ) ) ),
+      static_cast<void(*)()>( nullptr ),
       objectID,
-      std::type_index( typeid( decltype( methodPtr ) ) ) );
+      methodPtr );
 }
 
 template<class ConversionPolicy>
-template<typename... TupleParameters, class Index, typename... Parameters>
+template<
+   typename... TupleParameters,
+   class TypeIndex,
+   class FunctionPtr,
+   class MethodPtr,
+   typename... Parameters>
 void CallRecorder<ConversionPolicy>::record_(
-   const FiniteID& objectID, Index&& index, Parameters&&... arguments )
+   TypeIndex&& typeIndex,
+   FunctionPtr functionPtr,
+   const FiniteID& objectID,
+   MethodPtr methodPtr,
+   Parameters&&... arguments )
 {
    // (1) We can't use std::make_unique here since we're using an interface.
    // (2) Deduce the tuple storage type by means of the conversion policy. The
    //     deduction uses the parameter types in the function that is recorded,
    //     not the actual arguments that could be temporaries passed in.
    callHistory_.emplace_back(
+      std::forward<TypeIndex>( typeIndex ),
+      reinterpret_cast<void(*)()>( functionPtr ),
       objectID,
-      std::forward<Index>( index ),
+      reinterpret_cast<void(VoidType_::*)()>( methodPtr ),
       std::unique_ptr<ArgumentTupleI>(    // (1)
          new ArgumentTuple<
             StorageT<ConversionPolicy, TupleParameters>...>(   // (2)
@@ -155,20 +183,45 @@ void CallRecorder<ConversionPolicy>::record_(
 }
 
 template<class ConversionPolicy>
-template<typename... Parameters>
+template<typename... Parameters, class FunctionPtr, class MethodPtr>
 auto CallRecorder<ConversionPolicy>::find_(
+   const std::type_index& typeIndex,
+   FunctionPtr functionPtr,
    const FiniteID& objectID,
-   const std::type_index& index ) const
+   MethodPtr methodPtr ) const
 {
    std::vector<std::tuple<StorageT<ConversionPolicy, Parameters>...>> resultSet;
 
    for( auto& call : callHistory_ )
    {
-      if( objectID && std::get<FiniteID>( call ) != objectID )
+      // We must first make sure the type is the same. We use reinterpret_cast
+      // below and [C++14, §5.2.10/10 Reinterpret cast] says that converting
+      // the void pointers back to the types they were once created from shall
+      // yield their original pointers.
+      if( std::get<std::type_index>( call ) != typeIndex )
          continue;
 
-      if( std::get<std::type_index>( call ) != index )
-         continue;
+      // Either we search for a function or an object/method combination.
+      if( functionPtr )
+      {
+         if( reinterpret_cast<FunctionPtr>( std::get<void(*)()>( call ) ) !=
+            functionPtr )
+               continue;
+      }
+      else
+      {
+         // Object ID as search criteria.
+         if( objectID && std::get<FiniteID>( call ) != objectID )
+            continue;
+
+         // Method pointer as search criteria.
+         // WARNING! The != comparison is unspecified by the standard, see
+         // [C++14, §5.10/3 Equality operators]. It works on many compilers
+         // though and hopefully it will be specified in the future.
+         if( methodPtr && reinterpret_cast<MethodPtr>(
+            std::get<void(VoidType_::*)()>( call ) ) != methodPtr )
+               continue;
+      }
 
       // We cast the stored pointer to the correct tuple of arguments, since
       // what went in with a certain function pointer key should come out using

@@ -239,17 +239,39 @@ public:
 
 private:
 
+   class VoidType_;
+
+   // We want to be able to see the interleave between function calls and method
+   // calls, so therefore we register these calls in the same container. Some
+   // call this way of doing it a "Massively Unified Code-Key". In essence we
+   // use either the function pointer or a combination of the object ID / method
+   // pointer to store and retrieve the data.
    std::vector<std::tuple<
-      FiniteID,
       std::type_index,
+      void(*)(),
+      FiniteID,
+      void(VoidType_::*)(),
       std::unique_ptr<ArgumentTupleI>>> callHistory_;
 
-   template<typename... TupleParameters, class Index, typename... Parameters>
+   template<
+      typename... TupleParameters,
+      class TypeIndex,
+      class FunctionPtr,
+      class MethodPtr,
+      typename... Parameters>
    void record_(
-      const FiniteID& objectID, Index&& index, Parameters&&... arguments );
+      TypeIndex&& typeIndex,
+      FunctionPtr functionPtr,
+      const FiniteID& objectID,
+      MethodPtr methodPtr,
+      Parameters&&... arguments );
 
-   template<typename... Parameters>
-   auto find_( const FiniteID& objectID, const std::type_index& index ) const;
+   template<typename... Parameters, class FunctionPtr, class MethodPtr>
+   auto find_(
+      const std::type_index& typeIndex,
+      FunctionPtr functionPtr,
+      const FiniteID& objectID,
+      MethodPtr methodPtr ) const;
 
 };
 
