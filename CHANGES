@@ -1,5 +1,25 @@
 ________________________________________________________________________________
 
+Unimock v0.3.0
+________________________________________________________________________________
+
+Changes:
+   - Renamed the method to override mock methods from 'set' to 'override'.
+
+New Features:
+   - None
+
+Fixes:
+   - Fixed defect where 'make test' didn't fail on a failing unit test.
+   - Renamed some classes in the test suite.
+   - Corrected grammar in a comment.
+
+Known issues:
+   - None
+
+
+________________________________________________________________________________
+
 Unimock v0.2.2
 ________________________________________________________________________________
 
