@@ -334,7 +334,7 @@ void testMock()
       SomeClassMock mock( stub );
 
       auto iValue1 = mock.getInt();
-      mock.set( &SomeClassI::getInt, []{ return 52; } );
+      mock.override( &SomeClassI::getInt, []{ return 52; } );
       auto iValue2 = mock.getInt();
 
       auto resultSet = makeResultSet( mock, &SomeClassI::getInt );

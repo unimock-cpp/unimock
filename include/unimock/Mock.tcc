@@ -64,7 +64,7 @@ Mock<TI, ConversionPolicy>::Mock(
 
 template<class TI, class ConversionPolicy>
 template<typename R, typename... Parameters, class F>
-void Mock<TI, ConversionPolicy>::set(
+void Mock<TI, ConversionPolicy>::override(
    R(TI::*methodPtr)(Parameters...), F functor )
 {
    functionMap_.set( methodPtr, std::move( functor ) );
@@ -72,7 +72,7 @@ void Mock<TI, ConversionPolicy>::set(
 
 template<class TI, class ConversionPolicy>
 template<typename R, typename... Parameters, class F>
-void Mock<TI, ConversionPolicy>::set(
+void Mock<TI, ConversionPolicy>::override(
    R(TI::*methodPtr)(Parameters...) const, F functor )
 {
    functionMap_.set( methodPtr, std::move( functor ) );

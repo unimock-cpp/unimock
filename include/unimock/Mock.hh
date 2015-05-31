@@ -97,14 +97,14 @@ public:
       std::shared_ptr<CallRecorder<ConversionPolicy>> recorder,
       std::shared_ptr<TI> stub );
 
-   /// Sets a stub function to be invoked for an interface method.
+   /// Sets a functor to be invoked for an interface method.
    ///
-   /// This set method sets a stub function to be run when the provided
-   /// interface method is called. If a stub was set in the constructor, this
-   /// stub function set here will override the stub in the constructor.
+   /// This method sets a functor to be run when the provided interface method
+   /// is called. If a stub was set in the constructor, this functor provided
+   /// here will override the stub in the constructor.
    ///
    /// \param[in] methodPtr
-   ///   The interface method that shall get the stub function.
+   ///   The interface method that shall get the overriding function.
    ///
    /// \param[in] functor
    ///   The functor that shall be invoked when the interface method is called.
@@ -112,15 +112,15 @@ public:
    /// \exception Exception neutral.
    ///
    template<typename R, typename... Parameters, class F>
-   void set( R(TI::*methodPtr)(Parameters...), F functor );
+   void override( R(TI::*methodPtr)(Parameters...), F functor );
 
-   /// Sets a stub function to be invoked for an interface method.
+   /// Sets a functor to be invoked for an interface method.
    ///
-   /// This set method works the same as the other set method. The difference is
+   /// This method works the same as the other set method. The difference is
    /// that it takes a const method pointer.
    ///
    /// \param[in] methodPtr
-   ///   The interface method that shall get the stub function.
+   ///   The interface method that shall get the overriding function.
    ///
    /// \param[in] functor
    ///   The functor that shall be invoked when the interface method is called.
@@ -128,7 +128,7 @@ public:
    /// \exception Exception neutral.
    ///
    template<typename R, typename... Parameters, class F>
-   void set( R(TI::*methodPtr)(Parameters...) const, F functor );
+   void override( R(TI::*methodPtr)(Parameters...) const, F functor );
 
    /// Finds all recorded calls for the method provided.
    ///
