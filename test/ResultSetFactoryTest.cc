@@ -28,23 +28,23 @@ void setFnc( void(*functionPtr)(int, std::string) )
    (*functionPtr)( 42, "fortytwo" );
 }
 
-class SomeClassI
+class ISomeClass
 {
 public:
-   virtual ~SomeClassI() {}
+   virtual ~ISomeClass() {}
    virtual std::string getStr() = 0;
    virtual std::string getStr() const = 0;
 };
 
-class SomeClassMock : public unimock::Mock<SomeClassI>
+class SomeClassMock : public unimock::Mock<ISomeClass>
 {
 public:
-   using unimock::Mock<SomeClassI>::Mock;
-   virtual std::string getStr() { return call( &SomeClassI::getStr ); }
-   virtual std::string getStr() const { return call( &SomeClassI::getStr ); }
+   using unimock::Mock<ISomeClass>::Mock;
+   virtual std::string getStr() { return call( &ISomeClass::getStr ); }
+   virtual std::string getStr() const { return call( &ISomeClass::getStr ); }
 };
 
-class SomeClassStub : public SomeClassI
+class SomeClassStub : public ISomeClass
 {
 public:
    virtual std::string getStr() { return "non-const"; }
@@ -83,7 +83,7 @@ void testResultSetFactory()
    test( "Find two methods overloaded on const, with mock and method" );
    {
       auto recorder = std::make_shared<CallRecorder<>>();
-      auto stub = std::shared_ptr<SomeClassI>( new SomeClassStub );
+      auto stub = std::shared_ptr<ISomeClass>( new SomeClassStub );
       SomeClassMock mock( recorder, stub );
       const SomeClassMock constMock( recorder, stub );
 
@@ -91,10 +91,10 @@ void testResultSetFactory()
       s1 = mock.getStr();
       auto s2 = constMock.getStr();
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::getStr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::getStr );
       require( resultSet.size() == 2 );
       require( s1 == "non-const" );
-      auto resultSet2 = makeResultSet( constMock, &SomeClassI::getStr );
+      auto resultSet2 = makeResultSet( constMock, &ISomeClass::getStr );
       require( resultSet2.size() == 1 );
       require( s2 == "const" );
    }
@@ -102,7 +102,7 @@ void testResultSetFactory()
    test( "Find two methods overloaded on const, with recorder, mock, method" );
    {
       auto recorder = std::make_shared<CallRecorder<>>();
-      auto stub = std::shared_ptr<SomeClassI>( new SomeClassStub );
+      auto stub = std::shared_ptr<ISomeClass>( new SomeClassStub );
       SomeClassMock mock( recorder, stub );
       const SomeClassMock constMock( recorder, stub );
 
@@ -110,11 +110,11 @@ void testResultSetFactory()
       s1 = mock.getStr();
       auto s2 = constMock.getStr();
 
-      auto resultSet = makeResultSet( recorder, mock, &SomeClassI::getStr );
+      auto resultSet = makeResultSet( recorder, mock, &ISomeClass::getStr );
       require( resultSet.size() == 2 );
       require( s1 == "non-const" );
       auto resultSet2 =
-         makeResultSet( recorder, constMock, &SomeClassI::getStr );
+         makeResultSet( recorder, constMock, &ISomeClass::getStr );
       require( resultSet2.size() == 1 );
       require( s2 == "const" );
    }
@@ -122,7 +122,7 @@ void testResultSetFactory()
    test( "Find two methods overloaded on const, with recorder and method" );
    {
       auto recorder = std::make_shared<CallRecorder<>>();
-      auto stub = std::shared_ptr<SomeClassI>( new SomeClassStub );
+      auto stub = std::shared_ptr<ISomeClass>( new SomeClassStub );
       SomeClassMock mock( recorder, stub );
       const SomeClassMock constMock( recorder, stub );
 
@@ -132,13 +132,13 @@ void testResultSetFactory()
 
       auto resultSet = makeResultSet(
          recorder,
-         static_cast<std::string(SomeClassI::*)()>( &SomeClassI::getStr ) );
+         static_cast<std::string(ISomeClass::*)()>( &ISomeClass::getStr ) );
       require( resultSet.size() == 2 );
       require( s1 == "non-const" );
       auto resultSet2 = makeResultSet(
          recorder,
-         static_cast<std::string(SomeClassI::*)() const>(
-            &SomeClassI::getStr ) );
+         static_cast<std::string(ISomeClass::*)() const>(
+            &ISomeClass::getStr ) );
       require( resultSet2.size() == 1 );
       require( s2 == "const" );
    }

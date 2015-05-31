@@ -27,10 +27,10 @@ void setIntStr( int i, std::string s ) {}
 void setVal( int i ) {}
 void setVal( double d ) {}
 
-class SomeClassI
+class ISomeClass
 {
 public:
-   virtual ~SomeClassI() {}
+   virtual ~ISomeClass() {}
    virtual void setIntStr( int i, std::string s ) = 0;
    virtual void setIntStrConst( int i, std::string s ) const = 0;
    virtual void setInt( int i ) = 0;
@@ -43,7 +43,7 @@ public:
    virtual void setSPtr( std::shared_ptr<int> sip ) = 0;
 };
 
-class SomeClass : public SomeClassI
+class SomeClass : public ISomeClass
 {
 public:
    virtual void setIntStr( int i, std::string s ) {}
@@ -80,9 +80,9 @@ void testCallRecorder()
    {
       CallRecorder<> recorder;
 
-      recorder.record( FiniteID(), &SomeClassI::setIntStr, 25, "twentyfive" );
+      recorder.record( FiniteID(), &ISomeClass::setIntStr, 25, "twentyfive" );
 
-      auto resultSet = makeResultSet( recorder.find( &SomeClassI::setIntStr ) );
+      auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntStr ) );
       require( resultSet.get<0, 0>() == 25 );
       require( resultSet.get<0, 1>() == "twentyfive" );
    }
@@ -92,10 +92,10 @@ void testCallRecorder()
       CallRecorder<> recorder;
 
       recorder.record(
-         FiniteID(), &SomeClassI::setIntStrConst, 26, "twentysix" );
+         FiniteID(), &ISomeClass::setIntStrConst, 26, "twentysix" );
 
       auto resultSet =
-         makeResultSet( recorder.find( &SomeClassI::setIntStrConst ) );
+         makeResultSet( recorder.find( &ISomeClass::setIntStrConst ) );
       require( resultSet.get<0, 0>() == 26 );
       require( resultSet.get<0, 1>() == "twentysix" );
    }
@@ -138,18 +138,18 @@ void testCallRecorder()
 
       recorder.record(
          FiniteID(),
-         static_cast<void(SomeClassI::*)(int)>( &SomeClassI::setInt ),
+         static_cast<void(ISomeClass::*)(int)>( &ISomeClass::setInt ),
          3 );
       recorder.record(
          FiniteID(),
-         static_cast<void(SomeClassI::*)(int) const>( &SomeClassI::setInt ),
+         static_cast<void(ISomeClass::*)(int) const>( &ISomeClass::setInt ),
          5 );
 
       auto resultSet = makeResultSet( recorder.find(
-         static_cast<void(SomeClassI::*)(int)>( &SomeClassI::setInt ) ) );
+         static_cast<void(ISomeClass::*)(int)>( &ISomeClass::setInt ) ) );
       require( resultSet.get<0, 0>() == 3 );
       auto resultSet2 = makeResultSet( recorder.find(
-         static_cast<void(SomeClassI::*)(int) const>( &SomeClassI::setInt ) ) );
+         static_cast<void(ISomeClass::*)(int) const>( &ISomeClass::setInt ) ) );
       require( resultSet2.get<0, 0>() == 5 );
    }
 
@@ -157,14 +157,14 @@ void testCallRecorder()
    {
       CallRecorder<> recorder;
 
-      recorder.record( FiniteID(), &SomeClassI::setDouble, 10.0 );
-      recorder.record( FiniteID(), &SomeClassI::setAnotherDouble, 20.0 );
+      recorder.record( FiniteID(), &ISomeClass::setDouble, 10.0 );
+      recorder.record( FiniteID(), &ISomeClass::setAnotherDouble, 20.0 );
 
       auto resultSet =
-         makeResultSet( recorder.find( &SomeClassI::setDouble ) );
+         makeResultSet( recorder.find( &ISomeClass::setDouble ) );
       require( resultSet.size() == 1 );
       auto resultSet2 =
-         makeResultSet( recorder.find( &SomeClassI::setAnotherDouble ) );
+         makeResultSet( recorder.find( &ISomeClass::setAnotherDouble ) );
       require( resultSet2.size() == 1 );
    }
 
@@ -173,10 +173,10 @@ void testCallRecorder()
       CallRecorder<> recorder;
       int* ip = new int( 15 );
 
-      recorder.record( FiniteID(), &SomeClassI::setIntPtr, ip );
+      recorder.record( FiniteID(), &ISomeClass::setIntPtr, ip );
       delete ip;
 
-      auto resultSet = makeResultSet( recorder.find( &SomeClassI::setIntPtr ) );
+      auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntPtr ) );
       require( resultSet.get<0, 0>() == 15 );
    }
 
@@ -185,10 +185,10 @@ void testCallRecorder()
       CallRecorder<> recorder;
       const std::unique_ptr<int> uip = std::make_unique<int>( 30 );
 
-      recorder.record( FiniteID(), &SomeClassI::setConstRefUPtr, uip );
+      recorder.record( FiniteID(), &ISomeClass::setConstRefUPtr, uip );
 
       auto resultSet =
-         makeResultSet( recorder.find( &SomeClassI::setConstRefUPtr ) );
+         makeResultSet( recorder.find( &ISomeClass::setConstRefUPtr ) );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -197,9 +197,9 @@ void testCallRecorder()
       CallRecorder<> recorder;
       std::unique_ptr<int> uip = std::make_unique<int>( 32 );
 
-      recorder.record( FiniteID(), &SomeClassI::setUPtr, std::move( uip ) );
+      recorder.record( FiniteID(), &ISomeClass::setUPtr, std::move( uip ) );
 
-      auto resultSet = makeResultSet( recorder.find( &SomeClassI::setUPtr ) );
+      auto resultSet = makeResultSet( recorder.find( &ISomeClass::setUPtr ) );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -208,9 +208,9 @@ void testCallRecorder()
       CallRecorder<> recorder;
       std::shared_ptr<int> sip = std::make_shared<int>( 34 );
 
-      recorder.record( FiniteID(), &SomeClassI::setSPtr, sip );
+      recorder.record( FiniteID(), &ISomeClass::setSPtr, sip );
 
-      auto resultSet = makeResultSet( recorder.find( &SomeClassI::setSPtr ) );
+      auto resultSet = makeResultSet( recorder.find( &ISomeClass::setSPtr ) );
       require( *resultSet.get<0, 0>() == 34 );
    }
 
@@ -221,22 +221,22 @@ void testCallRecorder()
       FiniteID id2 = FiniteID::generate();
       FiniteID id3 = FiniteID::generate();
 
-      recorder.record( id1, &SomeClassI::setIntStr, 3, "three" );
-      recorder.record( id2, &SomeClassI::setIntStr, 5, "five" );
-      recorder.record( id3, &SomeClassI::setIntStr, 8, "eight" );
+      recorder.record( id1, &ISomeClass::setIntStr, 3, "three" );
+      recorder.record( id2, &ISomeClass::setIntStr, 5, "five" );
+      recorder.record( id3, &ISomeClass::setIntStr, 8, "eight" );
 
-      auto resultSet = makeResultSet( recorder.find( &SomeClassI::setIntStr ) );
+      auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntStr ) );
       require( resultSet.get<0, 0>() == 3 );
       require( resultSet.get<1, 0>() == 5 );
       require( resultSet.get<2, 0>() == 8 );
       auto resultSet2 =
-         makeResultSet( recorder.find( id1, &SomeClassI::setIntStr ) );
+         makeResultSet( recorder.find( id1, &ISomeClass::setIntStr ) );
       require( resultSet2.get<0, 0>() == 3 );
       auto resultSet3 =
-         makeResultSet( recorder.find( id2, &SomeClassI::setIntStr ) );
+         makeResultSet( recorder.find( id2, &ISomeClass::setIntStr ) );
       require( resultSet3.get<0, 0>() == 5 );
       auto resultSet4 =
-         makeResultSet( recorder.find( id3, &SomeClassI::setIntStr ) );
+         makeResultSet( recorder.find( id3, &ISomeClass::setIntStr ) );
       require( resultSet4.get<0, 0>() == 8 );
    }
 
@@ -244,9 +244,9 @@ void testCallRecorder()
    {
       CallRecorder<> recorder;
 
-      recorder.record( FiniteID(), &SomeClassI::setIntStr, 3, "three" );
+      recorder.record( FiniteID(), &ISomeClass::setIntStr, 3, "three" );
 
-      auto resultSet = makeResultSet( recorder.find( &SomeClassI::setIntStr ) );
+      auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntStr ) );
       require( resultSet.get<0, int>() == 3 );
       require( resultSet.get<0, std::string>() == "three" );
    }

@@ -24,17 +24,17 @@ ________________________________________________________________________________
 namespace
 {
 
-class SomeClassI
+class ISomeClass
 {
 public:
-   virtual ~SomeClassI() {}
+   virtual ~ISomeClass() {}
    virtual void setInt( int i ) = 0;
    virtual void setAnotherInt( int i ) = 0;
    virtual void setIntConst( int i ) const = 0;
    virtual int getInt() const = 0;
    virtual void getIntByRef( int& ir ) = 0;
    virtual void setIntPtr( int* ip ) = 0;
-   virtual void setClass( SomeClassI* scp ) = 0;
+   virtual void setClass( ISomeClass* scp ) = 0;
    virtual void setStrPtr( const char* ccp ) = 0;
    virtual void setConstRefUPtr( const std::unique_ptr<int>& uip ) = 0;
    virtual void setUPtr( std::unique_ptr<int> uip ) = 0;
@@ -46,39 +46,39 @@ public:
 
 template<class ConversionPolicy>
 class SomeClassBaseMock
-   : public unimock::Mock<SomeClassI, ConversionPolicy>
+   : public unimock::Mock<ISomeClass, ConversionPolicy>
 {
 public:
-   using unimock::Mock<SomeClassI, ConversionPolicy>::Mock;
-   using unimock::Mock<SomeClassI, ConversionPolicy>::call;
+   using unimock::Mock<ISomeClass, ConversionPolicy>::Mock;
+   using unimock::Mock<ISomeClass, ConversionPolicy>::call;
 
-   virtual void setInt( int i ) { call( &SomeClassI::setInt, i ); }
+   virtual void setInt( int i ) { call( &ISomeClass::setInt, i ); }
    virtual void setAnotherInt( int i )
-      { call( &SomeClassI::setAnotherInt, i ); }
+      { call( &ISomeClass::setAnotherInt, i ); }
    virtual void setIntConst( int i ) const
-      { call( &SomeClassI::setIntConst, i ); }
-   virtual int getInt() const { return call( &SomeClassI::getInt ); }
-   virtual void getIntByRef( int& ir ) { call( &SomeClassI::getIntByRef, ir ); }
-   virtual void setIntPtr( int* ip ) { call( &SomeClassI::setIntPtr, ip ); }
-   virtual void setClass( SomeClassI* scp )
-      { call( &SomeClassI::setClass, scp ); }
+      { call( &ISomeClass::setIntConst, i ); }
+   virtual int getInt() const { return call( &ISomeClass::getInt ); }
+   virtual void getIntByRef( int& ir ) { call( &ISomeClass::getIntByRef, ir ); }
+   virtual void setIntPtr( int* ip ) { call( &ISomeClass::setIntPtr, ip ); }
+   virtual void setClass( ISomeClass* scp )
+      { call( &ISomeClass::setClass, scp ); }
    virtual void setStrPtr( const char* ccp )
-      { call( &SomeClassI::setStrPtr, ccp ); }
+      { call( &ISomeClass::setStrPtr, ccp ); }
    virtual void setConstRefUPtr( const std::unique_ptr<int>& uip )
-      { call( &SomeClassI::setConstRefUPtr, uip ); }
+      { call( &ISomeClass::setConstRefUPtr, uip ); }
    virtual void setUPtr( std::unique_ptr<int> uip )
-      { call( &SomeClassI::setUPtr, std::move( uip ) ); }
+      { call( &ISomeClass::setUPtr, std::move( uip ) ); }
    virtual void setSPtr( std::shared_ptr<int> sip )
-      { call( &SomeClassI::setSPtr, sip ); }
+      { call( &ISomeClass::setSPtr, sip ); }
    virtual std::unique_ptr<int> getUPtr() const
-      { return call( &SomeClassI::getUPtr ); }
+      { return call( &ISomeClass::getUPtr ); }
    virtual std::string getStr()
-      { return call( &SomeClassI::getStr ); }
+      { return call( &ISomeClass::getStr ); }
    virtual std::string getStr() const
-      { return call( &SomeClassI::getStr ); }
+      { return call( &ISomeClass::getStr ); }
 };
 
-class SomeClassStub : public SomeClassI
+class SomeClassStub : public ISomeClass
 {
 public:
    virtual void setInt( int i ) {}
@@ -87,7 +87,7 @@ public:
    virtual int getInt() const { return 42; }
    virtual void getIntByRef( int& ir ) { ir = 45; }
    virtual void setIntPtr( int* ip ) {}
-   virtual void setClass( SomeClassI* scp ) {}
+   virtual void setClass( ISomeClass* scp ) {}
    virtual void setStrPtr( const char* ccp ) {}
    virtual void setConstRefUPtr( const std::unique_ptr<int>& uip ) {}
    virtual void setUPtr( std::unique_ptr<int> uip ) {}
@@ -106,7 +106,7 @@ struct SomeConversionPolicy
    template<typename T>
    static T convert( const std::unique_ptr<T>& uip ) { return *uip; }
 
-   static int convert( SomeClassI* scp ) { return scp->getInt(); }
+   static int convert( ISomeClass* scp ) { return scp->getInt(); }
 };
 
 using SomeClassMock =
@@ -132,23 +132,23 @@ void testMock()
 
       mock.setInt( 3 );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setInt );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setInt );
       require( resultSet.get<0, 0>() == 3 );
    }
 
    test( "Call a stubbed mock method" );
    {
-      SomeClassMock mock( std::shared_ptr<SomeClassI>( new SomeClassStub ) );
+      SomeClassMock mock( std::shared_ptr<ISomeClass>( new SomeClassStub ) );
       int intVal = 23;
 
       mock.setInt( 3 );
       auto value = mock.getInt();
       mock.getIntByRef( intVal );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setInt );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setInt );
       require( resultSet.get<0, 0>() == 3 );
       require( value == 42 );
-      auto resultSet2 = makeResultSet( mock, &SomeClassI::getIntByRef );
+      auto resultSet2 = makeResultSet( mock, &ISomeClass::getIntByRef );
       require( resultSet2.get<0, 0>() == 23 );
       require( intVal == 45 );
    }
@@ -160,7 +160,7 @@ void testMock()
 
       mock.setClass( &someClass );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setClass );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setClass );
       require( resultSet.get<0, 0>() == someClass.getInt() );
    }
 
@@ -171,9 +171,9 @@ void testMock()
       mock.setInt( 3 );
       mock.setAnotherInt( 5 );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setInt );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setInt );
       require( resultSet.size() == 1 );
-      auto resultSet2 = makeResultSet( mock, &SomeClassI::setAnotherInt );
+      auto resultSet2 = makeResultSet( mock, &ISomeClass::setAnotherInt );
       require( resultSet2.size() == 1 );
    }
 
@@ -183,7 +183,7 @@ void testMock()
 
       mock.setIntConst( 10 );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setIntConst );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setIntConst );
       require( resultSet.get<0, 0>() == 10 );
    }
 
@@ -195,7 +195,7 @@ void testMock()
       mock.setIntPtr( ip );
       delete ip;
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setIntPtr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setIntPtr );
       require( resultSet.get<0, 0>() == 15 );
    }
 
@@ -205,7 +205,7 @@ void testMock()
 
       mock.setStrPtr( "string literal" );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setStrPtr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setStrPtr );
       require( resultSet.get<0, 0>() == "string literal" );
    }
 
@@ -216,7 +216,7 @@ void testMock()
 
       mock.setConstRefUPtr( uip );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setConstRefUPtr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setConstRefUPtr );
       require( resultSet.get<0, 0>() == 30 );
    }
 
@@ -227,7 +227,7 @@ void testMock()
 
       mock.setUPtr( std::move( uip ) );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setUPtr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setUPtr );
       require( resultSet.get<0, 0>() == 32 );
    }
 
@@ -238,7 +238,7 @@ void testMock()
 
       mock.setSPtr( sip );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setSPtr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setSPtr );
       require( *resultSet.get<0, 0>() == 34 );
    }
 
@@ -252,10 +252,10 @@ void testMock()
       mock.setIntPtr( ip );
       mock.setConstRefUPtr( uip );
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::setIntPtr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::setIntPtr );
       require( resultSet.get<0, 0>() == ip );
       delete ip;
-      auto resultSet2 = makeResultSet( mock, &SomeClassI::setConstRefUPtr );
+      auto resultSet2 = makeResultSet( mock, &ISomeClass::setConstRefUPtr );
       require( resultSet2.get<0, 0>() == uirp );
    }
 
@@ -270,7 +270,7 @@ void testMock()
 
    test( "Call a stubbed mock method returning a unique_ptr" );
    {
-      SomeClassMock mock( std::shared_ptr<SomeClassI>( new SomeClassStub ) );
+      SomeClassMock mock( std::shared_ptr<ISomeClass>( new SomeClassStub ) );
 
       std::unique_ptr<int> uip = mock.getUPtr();
 
@@ -286,12 +286,12 @@ void testMock()
       mock1.setInt( 3 );
       mock2.setInt( 5 );
 
-      auto resultSet = makeResultSet( recorder, &SomeClassI::setInt );
+      auto resultSet = makeResultSet( recorder, &ISomeClass::setInt );
       require( resultSet.get<0, 0>() == 3 );
       require( resultSet.get<1, 0>() == 5 );
-      auto resultSet2 = makeResultSet( mock1, &SomeClassI::setInt );
+      auto resultSet2 = makeResultSet( mock1, &ISomeClass::setInt );
       require( resultSet2.get<0, 0>() == 3 );
-      auto resultSet3 = makeResultSet( mock2, &SomeClassI::setInt );
+      auto resultSet3 = makeResultSet( mock2, &ISomeClass::setInt );
       require( resultSet3.get<0, 0>() == 5 );
    }
 
@@ -304,40 +304,40 @@ void testMock()
       mock1.setInt( 3 );
       mock2.setInt( 5 );
 
-      auto resultSet = makeResultSet( recorder, &SomeClassI::setInt );
+      auto resultSet = makeResultSet( recorder, &ISomeClass::setInt );
       require( resultSet.get<0, 0>() == 3 );
       require( resultSet.get<1, 0>() == 5 );
-      auto resultSet2 = makeResultSet( recorder, mock2, &SomeClassI::setInt );
+      auto resultSet2 = makeResultSet( recorder, mock2, &ISomeClass::setInt );
       require( resultSet2.get<0, 0>() == 5 );
    }
 
    test( "Call a mock with two methods overloaded on const" );
    {
-      auto stub = std::shared_ptr<SomeClassI>( new SomeClassStub );
+      auto stub = std::shared_ptr<ISomeClass>( new SomeClassStub );
       SomeClassMock mock( stub );
       const SomeClassMock constMock( stub );
 
       auto s1 = mock.getStr();
       auto s2 = constMock.getStr();
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::getStr );
+      auto resultSet = makeResultSet( mock, &ISomeClass::getStr );
       require( resultSet.size() == 1 );
       require( s1 == "non-const" );
-      auto resultSet2 = makeResultSet( constMock, &SomeClassI::getStr );
+      auto resultSet2 = makeResultSet( constMock, &ISomeClass::getStr );
       require( resultSet2.size() == 1 );
       require( s2 == "const" );
    }
 
    test( "Call a mock with an overrided stub" );
    {
-      auto stub = std::shared_ptr<SomeClassI>( new SomeClassStub );
+      auto stub = std::shared_ptr<ISomeClass>( new SomeClassStub );
       SomeClassMock mock( stub );
 
       auto iValue1 = mock.getInt();
-      mock.override( &SomeClassI::getInt, []{ return 52; } );
+      mock.override( &ISomeClass::getInt, []{ return 52; } );
       auto iValue2 = mock.getInt();
 
-      auto resultSet = makeResultSet( mock, &SomeClassI::getInt );
+      auto resultSet = makeResultSet( mock, &ISomeClass::getInt );
       require( resultSet.size() == 2 );
       require( iValue1 == 42 );
       require( iValue2 == 52 );
