@@ -12,6 +12,7 @@ ________________________________________________________________________________
 */
 
 #include <iostream>
+#include <cstdlib>
 
 
 inline void test( std::string description )
@@ -24,6 +25,7 @@ inline void require( bool condition )
    if( !condition )
    {
       std::cout << "TEST FAILED!" << std::endl;
+      std::exit( EXIT_FAILURE );
    }
 }
 
