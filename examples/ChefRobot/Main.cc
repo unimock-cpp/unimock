@@ -41,7 +41,7 @@ class RefrigeratorMock : public unimock::Mock<IRefrigerator>
 {
 public:
 
-   // We must say that we want to use Mock's constructor for some tests where
+   // We must say that we want to use Mock's constructor in some tests where
    // we provide stubs or real objects.
    using unimock::Mock<IRefrigerator>::Mock;
 
