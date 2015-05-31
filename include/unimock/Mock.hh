@@ -211,7 +211,7 @@ protected:
    /// The method should be a method pointer to the interface and not the mock.
    /// See example below.
    /// ~~~
-   /// virtual Status setInt( int i ) { return call( &SomeClassI::setInt, i ); }
+   /// virtual Status setInt( int i ) { return call( &ISomeClass::setInt, i ); }
    /// ~~~
    ///
    /// This method will record the call and its argument, and then forward the
