@@ -20,7 +20,7 @@ inline void test( std::string description )
     std::cout << "Test: " << description << std::endl;
 }
 
-inline void require( bool condition )
+inline void ensure( bool condition )
 {
    if( !condition )
    {

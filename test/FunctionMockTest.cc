@@ -45,8 +45,8 @@ void testFunctionMock()
       setFnc( &mock.function );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 44 );
-      require( resultSet.get<0, 1>() == "fortyfour" );
+      ensure( resultSet.get<0, 0>() == 44 );
+      ensure( resultSet.get<0, 1>() == "fortyfour" );
    }
 
    test( "Provide a stubbed mock function" );
@@ -56,8 +56,8 @@ void testFunctionMock()
       setFnc( &mock.function );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 44 );
-      require( resultSet.get<0, 1>() == "fortyfour" );
+      ensure( resultSet.get<0, 0>() == 44 );
+      ensure( resultSet.get<0, 1>() == "fortyfour" );
    }
 
    test( "Call a mock function with a const unique_ptr&" );
@@ -68,7 +68,7 @@ void testFunctionMock()
       mock.function( uip );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 30 );
+      ensure( resultSet.get<0, 0>() == 30 );
    }
 
    test( "Call a mock function with a unique_ptr" );
@@ -79,7 +79,7 @@ void testFunctionMock()
       mock.function( std::move( uip ) );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 32 );
+      ensure( resultSet.get<0, 0>() == 32 );
    }
 
    test( "Call a stubbed mock function with a const unique_ptr&" );
@@ -90,7 +90,7 @@ void testFunctionMock()
       mock.function( uip );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 30 );
+      ensure( resultSet.get<0, 0>() == 30 );
    }
 
    test( "Call a stubbed mock function with a unique_ptr" );
@@ -101,7 +101,7 @@ void testFunctionMock()
       mock.function( std::move( uip ) );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 32 );
+      ensure( resultSet.get<0, 0>() == 32 );
    }
 
    test( "Call a function with a mock function" );
@@ -111,8 +111,8 @@ void testFunctionMock()
       setFunction( mock.function );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 45 );
-      require( resultSet.get<0, 1>() == "fortyfive" );
+      ensure( resultSet.get<0, 0>() == 45 );
+      ensure( resultSet.get<0, 1>() == "fortyfive" );
    }
 
    test(
@@ -129,10 +129,10 @@ void testFunctionMock()
       // since the static member function doesn't know to which object it
       // belongs.
       auto resultSet = makeResultSet( mock1 );
-      require( resultSet.get<0, 0>() == 45 );
-      require( resultSet.get<0, 1>() == "fortyfive" );
-      require( resultSet.get<1, 0>() == 45 );
-      require( resultSet.get<1, 1>() == "fortyfive" );
+      ensure( resultSet.get<0, 0>() == 45 );
+      ensure( resultSet.get<0, 1>() == "fortyfive" );
+      ensure( resultSet.get<1, 0>() == 45 );
+      ensure( resultSet.get<1, 1>() == "fortyfive" );
    }
 
 }

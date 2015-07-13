@@ -104,7 +104,7 @@ int main()
       // Then: Make sure the robot doesn't set the stove burner level higher
       //       than 8000.
       auto resultSet = makeResultSet( stoveMock, &IStove::turnOnBurner );
-      require( resultSet.get<0, 0>() < 8000 );
+      ensure( resultSet.get<0, 0>() < 8000 );
    }
 
    // Second most important thing is to make sure the robot doesn't use peanuts
@@ -124,7 +124,7 @@ int main()
       // Then: Make sure the robot doesn't use peanuts in any of the dishes.
       auto resultSet =
          makeResultSet( refrigeratorMock, &IRefrigerator::getPeanuts );
-      require( resultSet.size() == 0 );
+      ensure( resultSet.size() == 0 );
    }
 
    // Another thing all of us could be interested in is the level of spiciness.
@@ -145,7 +145,7 @@ int main()
       Dish starter = swedishChef.prepareStarter();
 
       // Then: Try the dish and see if it's too hot.
-      require( starter.getScovilleUnits() <= 100000 );
+      ensure( starter.getScovilleUnits() <= 100000 );
    }
 
    // Finally it's always good to turn off the stove.
@@ -165,7 +165,7 @@ int main()
 
       // Then: Make sure the robot turned off the stove.
       auto resultSet = makeResultSet( stoveMock, &IStove::turnOffBurner );
-      require( resultSet.size() >= 1 );
+      ensure( resultSet.size() >= 1 );
    }
 
    return 0;

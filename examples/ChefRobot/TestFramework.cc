@@ -21,7 +21,7 @@ void test( std::string description )
     std::cout << "Test: " << description << std::endl;
 }
 
-void require( bool condition )
+void ensure( bool condition )
 {
    if( !condition )
       std::cout << "Test failed!" << std::endl;

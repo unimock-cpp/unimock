@@ -133,7 +133,7 @@ void testMock()
       mock.setInt( 3 );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setInt );
-      require( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<0, 0>() == 3 );
    }
 
    test( "Call a stubbed mock method" );
@@ -146,11 +146,11 @@ void testMock()
       mock.getIntByRef( intVal );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setInt );
-      require( resultSet.get<0, 0>() == 3 );
-      require( value == 42 );
+      ensure( resultSet.get<0, 0>() == 3 );
+      ensure( value == 42 );
       auto resultSet2 = makeResultSet( mock, &ISomeClass::getIntByRef );
-      require( resultSet2.get<0, 0>() == 23 );
-      require( intVal == 45 );
+      ensure( resultSet2.get<0, 0>() == 23 );
+      ensure( intVal == 45 );
    }
 
    test( "Call a mock method with a conversion policy" );
@@ -161,7 +161,7 @@ void testMock()
       mock.setClass( &someClass );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setClass );
-      require( resultSet.get<0, 0>() == someClass.getInt() );
+      ensure( resultSet.get<0, 0>() == someClass.getInt() );
    }
 
    test( "Call two mock methods with the same signature" );
@@ -172,9 +172,9 @@ void testMock()
       mock.setAnotherInt( 5 );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setInt );
-      require( resultSet.size() == 1 );
+      ensure( resultSet.size() == 1 );
       auto resultSet2 = makeResultSet( mock, &ISomeClass::setAnotherInt );
-      require( resultSet2.size() == 1 );
+      ensure( resultSet2.size() == 1 );
    }
 
    test( "Call a mock const method" );
@@ -184,7 +184,7 @@ void testMock()
       mock.setIntConst( 10 );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setIntConst );
-      require( resultSet.get<0, 0>() == 10 );
+      ensure( resultSet.get<0, 0>() == 10 );
    }
 
    test( "Call a mock method with a converted argument" );
@@ -196,7 +196,7 @@ void testMock()
       delete ip;
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setIntPtr );
-      require( resultSet.get<0, 0>() == 15 );
+      ensure( resultSet.get<0, 0>() == 15 );
    }
 
    test( "Call a mock method with a const char*" );
@@ -206,7 +206,7 @@ void testMock()
       mock.setStrPtr( "string literal" );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setStrPtr );
-      require( resultSet.get<0, 0>() == "string literal" );
+      ensure( resultSet.get<0, 0>() == "string literal" );
    }
 
    test( "Call a mock method with a const unique_ptr&" );
@@ -217,7 +217,7 @@ void testMock()
       mock.setConstRefUPtr( uip );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setConstRefUPtr );
-      require( resultSet.get<0, 0>() == 30 );
+      ensure( resultSet.get<0, 0>() == 30 );
    }
 
    test( "Call a mock method with a unique_ptr" );
@@ -228,7 +228,7 @@ void testMock()
       mock.setUPtr( std::move( uip ) );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setUPtr );
-      require( resultSet.get<0, 0>() == 32 );
+      ensure( resultSet.get<0, 0>() == 32 );
    }
 
    test( "Call a mock method with a shared_ptr" );
@@ -239,7 +239,7 @@ void testMock()
       mock.setSPtr( sip );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setSPtr );
-      require( *resultSet.get<0, 0>() == 34 );
+      ensure( *resultSet.get<0, 0>() == 34 );
    }
 
    test( "Call a mock method with a minimal conversion policy" );
@@ -253,10 +253,10 @@ void testMock()
       mock.setConstRefUPtr( uip );
 
       auto resultSet = makeResultSet( mock, &ISomeClass::setIntPtr );
-      require( resultSet.get<0, 0>() == ip );
+      ensure( resultSet.get<0, 0>() == ip );
       delete ip;
       auto resultSet2 = makeResultSet( mock, &ISomeClass::setConstRefUPtr );
-      require( resultSet2.get<0, 0>() == uirp );
+      ensure( resultSet2.get<0, 0>() == uirp );
    }
 
    test( "Call a mock method returning a unique_ptr" );
@@ -265,7 +265,7 @@ void testMock()
 
       std::unique_ptr<int> uip = mock.getUPtr();
 
-      require( uip == nullptr );
+      ensure( uip == nullptr );
    }
 
    test( "Call a stubbed mock method returning a unique_ptr" );
@@ -274,7 +274,7 @@ void testMock()
 
       std::unique_ptr<int> uip = mock.getUPtr();
 
-      require( *uip == 50 );
+      ensure( *uip == 50 );
    }
 
    test( "Call two mocks connected to the same call recorder" );
@@ -287,12 +287,12 @@ void testMock()
       mock2.setInt( 5 );
 
       auto resultSet = makeResultSet( recorder, &ISomeClass::setInt );
-      require( resultSet.get<0, 0>() == 3 );
-      require( resultSet.get<1, 0>() == 5 );
+      ensure( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<1, 0>() == 5 );
       auto resultSet2 = makeResultSet( mock1, &ISomeClass::setInt );
-      require( resultSet2.get<0, 0>() == 3 );
+      ensure( resultSet2.get<0, 0>() == 3 );
       auto resultSet3 = makeResultSet( mock2, &ISomeClass::setInt );
-      require( resultSet3.get<0, 0>() == 5 );
+      ensure( resultSet3.get<0, 0>() == 5 );
    }
 
    test( "Find a particular mock in a shared call recorder" );
@@ -305,10 +305,10 @@ void testMock()
       mock2.setInt( 5 );
 
       auto resultSet = makeResultSet( recorder, &ISomeClass::setInt );
-      require( resultSet.get<0, 0>() == 3 );
-      require( resultSet.get<1, 0>() == 5 );
+      ensure( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<1, 0>() == 5 );
       auto resultSet2 = makeResultSet( recorder, mock2, &ISomeClass::setInt );
-      require( resultSet2.get<0, 0>() == 5 );
+      ensure( resultSet2.get<0, 0>() == 5 );
    }
 
    test( "Call a mock with two methods overloaded on const" );
@@ -321,11 +321,11 @@ void testMock()
       auto s2 = constMock.getStr();
 
       auto resultSet = makeResultSet( mock, &ISomeClass::getStr );
-      require( resultSet.size() == 1 );
-      require( s1 == "non-const" );
+      ensure( resultSet.size() == 1 );
+      ensure( s1 == "non-const" );
       auto resultSet2 = makeResultSet( constMock, &ISomeClass::getStr );
-      require( resultSet2.size() == 1 );
-      require( s2 == "const" );
+      ensure( resultSet2.size() == 1 );
+      ensure( s2 == "const" );
    }
 
    test( "Call a mock with an overrided stub" );
@@ -338,9 +338,9 @@ void testMock()
       auto iValue2 = mock.getInt();
 
       auto resultSet = makeResultSet( mock, &ISomeClass::getInt );
-      require( resultSet.size() == 2 );
-      require( iValue1 == 42 );
-      require( iValue2 == 52 );
+      ensure( resultSet.size() == 2 );
+      ensure( iValue1 == 42 );
+      ensure( iValue2 == 52 );
    }
 
 }

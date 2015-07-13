@@ -35,5 +35,5 @@ void test( std::string description );
 ///
 /// \exception Exception neutral.
 ///
-void require( bool condition );
+void ensure( bool condition );
 

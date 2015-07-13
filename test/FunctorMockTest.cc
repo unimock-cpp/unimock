@@ -43,8 +43,8 @@ void testFunctorMock()
       mock( 10, "ten" );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 10 );
-      require( resultSet.get<0, 1>() == "ten" );
+      ensure( resultSet.get<0, 0>() == 10 );
+      ensure( resultSet.get<0, 1>() == "ten" );
    }
 
    test( "Call a stubbed mock functor" );
@@ -56,8 +56,8 @@ void testFunctorMock()
       mock( i, str );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == i );
-      require( resultSet.get<0, 1>() == str );
+      ensure( resultSet.get<0, 0>() == i );
+      ensure( resultSet.get<0, 1>() == str );
    }
 
    test( "Call a mock functor with a const unique_ptr&" );
@@ -68,7 +68,7 @@ void testFunctorMock()
       mock( uip );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 30 );
+      ensure( resultSet.get<0, 0>() == 30 );
    }
 
    test( "Call a mock functor with a unique_ptr" );
@@ -79,7 +79,7 @@ void testFunctorMock()
       mock( std::move( uip ) );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 32 );
+      ensure( resultSet.get<0, 0>() == 32 );
    }
 
    test( "Call a stubbed mock functor with a const unique_ptr&" );
@@ -90,7 +90,7 @@ void testFunctorMock()
       mock( uip );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 30 );
+      ensure( resultSet.get<0, 0>() == 30 );
    }
 
    test( "Call a stubbed mock functor with a unique_ptr" );
@@ -101,7 +101,7 @@ void testFunctorMock()
       mock( std::move( uip ) );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 32 );
+      ensure( resultSet.get<0, 0>() == 32 );
    }
 
    test( "Call a function with a mock functor" );
@@ -111,8 +111,8 @@ void testFunctorMock()
       setFunction( mock );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 45 );
-      require( resultSet.get<0, 1>() == "fortyfive" );
+      ensure( resultSet.get<0, 0>() == 45 );
+      ensure( resultSet.get<0, 1>() == "fortyfive" );
    }
 
    test(
@@ -126,13 +126,13 @@ void testFunctorMock()
       setFunction( mock2 );
 
       auto resultSet = makeResultSet( mock1 );
-      require( resultSet.size() == 1 );
-      require( resultSet.get<0, 0>() == 45 );
-      require( resultSet.get<0, 1>() == "fortyfive" );
+      ensure( resultSet.size() == 1 );
+      ensure( resultSet.get<0, 0>() == 45 );
+      ensure( resultSet.get<0, 1>() == "fortyfive" );
       auto resultSet2 = makeResultSet( mock2 );
-      require( resultSet2.size() == 1 );
-      require( resultSet2.get<0, 0>() == 45 );
-      require( resultSet2.get<0, 1>() == "fortyfive" );
+      ensure( resultSet2.size() == 1 );
+      ensure( resultSet2.get<0, 0>() == 45 );
+      ensure( resultSet2.get<0, 1>() == "fortyfive" );
    }
 
 }

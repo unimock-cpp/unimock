@@ -72,8 +72,8 @@ void testCallRecorder()
       recorder.record( setIntStr, 3, "three" );
 
       auto resultSet = makeResultSet( recorder.find( setIntStr ) );
-      require( resultSet.get<0, 0>() == 3 );
-      require( resultSet.get<0, 1>() == "three" );
+      ensure( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<0, 1>() == "three" );
    }
 
    test( "Record a method call" );
@@ -83,8 +83,8 @@ void testCallRecorder()
       recorder.record( FiniteID(), &ISomeClass::setIntStr, 25, "twentyfive" );
 
       auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntStr ) );
-      require( resultSet.get<0, 0>() == 25 );
-      require( resultSet.get<0, 1>() == "twentyfive" );
+      ensure( resultSet.get<0, 0>() == 25 );
+      ensure( resultSet.get<0, 1>() == "twentyfive" );
    }
 
    test( "Record a const method call" );
@@ -96,8 +96,8 @@ void testCallRecorder()
 
       auto resultSet =
          makeResultSet( recorder.find( &ISomeClass::setIntStrConst ) );
-      require( resultSet.get<0, 0>() == 26 );
-      require( resultSet.get<0, 1>() == "twentysix" );
+      ensure( resultSet.get<0, 0>() == 26 );
+      ensure( resultSet.get<0, 1>() == "twentysix" );
    }
 
    test( "Record three function calls" );
@@ -109,12 +109,12 @@ void testCallRecorder()
       recorder.record( setIntStr, 3, "three" );
 
       auto resultSet = makeResultSet( recorder.find( setIntStr ) );
-      require( resultSet.get<0, 0>() == 1 );
-      require( resultSet.get<0, 1>() == "one" );
-      require( resultSet.get<1, 0>() == 2 );
-      require( resultSet.get<1, 1>() == "two" );
-      require( resultSet.get<2, 0>() == 3 );
-      require( resultSet.get<2, 1>() == "three" );
+      ensure( resultSet.get<0, 0>() == 1 );
+      ensure( resultSet.get<0, 1>() == "one" );
+      ensure( resultSet.get<1, 0>() == 2 );
+      ensure( resultSet.get<1, 1>() == "two" );
+      ensure( resultSet.get<2, 0>() == 3 );
+      ensure( resultSet.get<2, 1>() == "three" );
    }
 
    test( "Record two overloaded function calls" );
@@ -126,10 +126,10 @@ void testCallRecorder()
 
       auto resultSet = makeResultSet( recorder.find(
          static_cast<void(*)(int)>( setVal ) ) );
-      require( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<0, 0>() == 3 );
       auto resultSet2 = makeResultSet( recorder.find(
          static_cast<void(*)(double)>( setVal ) ) );
-      require( resultSet2.get<0, 0>() > 3.1 );
+      ensure( resultSet2.get<0, 0>() > 3.1 );
    }
 
    test( "Record two overloaded method calls" );
@@ -147,10 +147,10 @@ void testCallRecorder()
 
       auto resultSet = makeResultSet( recorder.find(
          static_cast<void(ISomeClass::*)(int)>( &ISomeClass::setInt ) ) );
-      require( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<0, 0>() == 3 );
       auto resultSet2 = makeResultSet( recorder.find(
          static_cast<void(ISomeClass::*)(int) const>( &ISomeClass::setInt ) ) );
-      require( resultSet2.get<0, 0>() == 5 );
+      ensure( resultSet2.get<0, 0>() == 5 );
    }
 
    test( "Record two method calls with the same signature" );
@@ -162,10 +162,10 @@ void testCallRecorder()
 
       auto resultSet =
          makeResultSet( recorder.find( &ISomeClass::setDouble ) );
-      require( resultSet.size() == 1 );
+      ensure( resultSet.size() == 1 );
       auto resultSet2 =
          makeResultSet( recorder.find( &ISomeClass::setAnotherDouble ) );
-      require( resultSet2.size() == 1 );
+      ensure( resultSet2.size() == 1 );
    }
 
    test( "Record a method call with a converted argument" );
@@ -177,7 +177,7 @@ void testCallRecorder()
       delete ip;
 
       auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntPtr ) );
-      require( resultSet.get<0, 0>() == 15 );
+      ensure( resultSet.get<0, 0>() == 15 );
    }
 
    test( "Record a method call with a const unique_ptr&" );
@@ -189,7 +189,7 @@ void testCallRecorder()
 
       auto resultSet =
          makeResultSet( recorder.find( &ISomeClass::setConstRefUPtr ) );
-      require( resultSet.get<0, 0>() == 30 );
+      ensure( resultSet.get<0, 0>() == 30 );
    }
 
    test( "Record a method call with a unique_ptr" );
@@ -200,7 +200,7 @@ void testCallRecorder()
       recorder.record( FiniteID(), &ISomeClass::setUPtr, std::move( uip ) );
 
       auto resultSet = makeResultSet( recorder.find( &ISomeClass::setUPtr ) );
-      require( resultSet.get<0, 0>() == 32 );
+      ensure( resultSet.get<0, 0>() == 32 );
    }
 
    test( "Record a method call with a shared_ptr" );
@@ -211,7 +211,7 @@ void testCallRecorder()
       recorder.record( FiniteID(), &ISomeClass::setSPtr, sip );
 
       auto resultSet = makeResultSet( recorder.find( &ISomeClass::setSPtr ) );
-      require( *resultSet.get<0, 0>() == 34 );
+      ensure( *resultSet.get<0, 0>() == 34 );
    }
 
    test( "Record method calls using different objects" );
@@ -226,18 +226,18 @@ void testCallRecorder()
       recorder.record( id3, &ISomeClass::setIntStr, 8, "eight" );
 
       auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntStr ) );
-      require( resultSet.get<0, 0>() == 3 );
-      require( resultSet.get<1, 0>() == 5 );
-      require( resultSet.get<2, 0>() == 8 );
+      ensure( resultSet.get<0, 0>() == 3 );
+      ensure( resultSet.get<1, 0>() == 5 );
+      ensure( resultSet.get<2, 0>() == 8 );
       auto resultSet2 =
          makeResultSet( recorder.find( id1, &ISomeClass::setIntStr ) );
-      require( resultSet2.get<0, 0>() == 3 );
+      ensure( resultSet2.get<0, 0>() == 3 );
       auto resultSet3 =
          makeResultSet( recorder.find( id2, &ISomeClass::setIntStr ) );
-      require( resultSet3.get<0, 0>() == 5 );
+      ensure( resultSet3.get<0, 0>() == 5 );
       auto resultSet4 =
          makeResultSet( recorder.find( id3, &ISomeClass::setIntStr ) );
-      require( resultSet4.get<0, 0>() == 8 );
+      ensure( resultSet4.get<0, 0>() == 8 );
    }
 
    test( "Retrieve data by means of type instead of index" );
@@ -247,8 +247,8 @@ void testCallRecorder()
       recorder.record( FiniteID(), &ISomeClass::setIntStr, 3, "three" );
 
       auto resultSet = makeResultSet( recorder.find( &ISomeClass::setIntStr ) );
-      require( resultSet.get<0, int>() == 3 );
-      require( resultSet.get<0, std::string>() == "three" );
+      ensure( resultSet.get<0, int>() == 3 );
+      ensure( resultSet.get<0, std::string>() == "three" );
    }
 
 }

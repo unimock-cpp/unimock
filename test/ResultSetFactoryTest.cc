@@ -65,8 +65,8 @@ void testResultSetFactory()
       setFnc( &mock.function );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 42 );
-      require( resultSet.get<0, 1>() == "fortytwo" );
+      ensure( resultSet.get<0, 0>() == 42 );
+      ensure( resultSet.get<0, 1>() == "fortytwo" );
    }
 
    test( "Call a mock functor" );
@@ -76,8 +76,8 @@ void testResultSetFactory()
       mock( 10, "ten" );
 
       auto resultSet = makeResultSet( mock );
-      require( resultSet.get<0, 0>() == 10 );
-      require( resultSet.get<0, 1>() == "ten" );
+      ensure( resultSet.get<0, 0>() == 10 );
+      ensure( resultSet.get<0, 1>() == "ten" );
    }
 
    test( "Find two methods overloaded on const, with mock and method" );
@@ -92,11 +92,11 @@ void testResultSetFactory()
       auto s2 = constMock.getStr();
 
       auto resultSet = makeResultSet( mock, &ISomeClass::getStr );
-      require( resultSet.size() == 2 );
-      require( s1 == "non-const" );
+      ensure( resultSet.size() == 2 );
+      ensure( s1 == "non-const" );
       auto resultSet2 = makeResultSet( constMock, &ISomeClass::getStr );
-      require( resultSet2.size() == 1 );
-      require( s2 == "const" );
+      ensure( resultSet2.size() == 1 );
+      ensure( s2 == "const" );
    }
 
    test( "Find two methods overloaded on const, with recorder, mock, method" );
@@ -111,12 +111,12 @@ void testResultSetFactory()
       auto s2 = constMock.getStr();
 
       auto resultSet = makeResultSet( recorder, mock, &ISomeClass::getStr );
-      require( resultSet.size() == 2 );
-      require( s1 == "non-const" );
+      ensure( resultSet.size() == 2 );
+      ensure( s1 == "non-const" );
       auto resultSet2 =
          makeResultSet( recorder, constMock, &ISomeClass::getStr );
-      require( resultSet2.size() == 1 );
-      require( s2 == "const" );
+      ensure( resultSet2.size() == 1 );
+      ensure( s2 == "const" );
    }
 
    test( "Find two methods overloaded on const, with recorder and method" );
@@ -133,14 +133,14 @@ void testResultSetFactory()
       auto resultSet = makeResultSet(
          recorder,
          static_cast<std::string(ISomeClass::*)()>( &ISomeClass::getStr ) );
-      require( resultSet.size() == 2 );
-      require( s1 == "non-const" );
+      ensure( resultSet.size() == 2 );
+      ensure( s1 == "non-const" );
       auto resultSet2 = makeResultSet(
          recorder,
          static_cast<std::string(ISomeClass::*)() const>(
             &ISomeClass::getStr ) );
-      require( resultSet2.size() == 1 );
-      require( s2 == "const" );
+      ensure( resultSet2.size() == 1 );
+      ensure( s2 == "const" );
    }
 
 }
