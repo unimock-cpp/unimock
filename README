@@ -19,6 +19,7 @@ $ make test
 
 
 Tested compilers:
+GCC v4.9.0
 GCC v4.9.2
 
 
