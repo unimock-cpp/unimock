@@ -48,13 +48,13 @@ public:
    // We must use the mock's call() method to pass on the method call and its
    // arguments. Otherwise we can't connect the real equipment and the robot
    // would become suspicious and/or fail to do its work.
-   virtual void getTomatoes() { call( &IRefrigerator::getTomatoes ); }
-   virtual void getPeanuts() { call( &IRefrigerator::getPeanuts ); }
-   virtual void getEggs() { call( &IRefrigerator::getEggs ); }
-   virtual void getFish() { call( &IRefrigerator::getFish ); }
-   virtual void getBlackPepper() { call( &IRefrigerator::getBlackPepper ); }
-   virtual void getTabasco() { call( &IRefrigerator::getTabasco ); }
-   virtual void getRedSavinaHabanero()
+   void getTomatoes() override { call( &IRefrigerator::getTomatoes ); }
+   void getPeanuts() override { call( &IRefrigerator::getPeanuts ); }
+   void getEggs() override { call( &IRefrigerator::getEggs ); }
+   void getFish() override{ call( &IRefrigerator::getFish ); }
+   void getBlackPepper() override { call( &IRefrigerator::getBlackPepper ); }
+   void getTabasco() override { call( &IRefrigerator::getTabasco ); }
+   void getRedSavinaHabanero() override
    {
       call( &IRefrigerator::getRedSavinaHabanero );
    }
@@ -66,19 +66,19 @@ public:
 
    using unimock::Mock<IStove>::Mock;
 
-   virtual void turnOnBurner( int level )
+   void turnOnBurner( int level ) override
    {
       call( &IStove::turnOnBurner, level );
    }
 
-   virtual void turnOffBurner() { call( &IStove::turnOffBurner ); }
+   void turnOffBurner() override { call( &IStove::turnOffBurner ); }
 
-   virtual void turnOnOven( int temperature )
+   void turnOnOven( int temperature ) override
    {
       call( &IStove::turnOnOven, temperature );
    }
 
-   virtual void turnOffOven() { call( &IStove::turnOffOven ); }
+   void turnOffOven() override { call( &IStove::turnOffOven ); }
 };
 
 // That's it! The mocks above are the only things we need to create before we

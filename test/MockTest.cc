@@ -52,50 +52,51 @@ public:
    using unimock::Mock<ISomeClass, ConversionPolicy>::Mock;
    using unimock::Mock<ISomeClass, ConversionPolicy>::call;
 
-   virtual void setInt( int i ) { call( &ISomeClass::setInt, i ); }
-   virtual void setAnotherInt( int i )
+   void setInt( int i ) override { call( &ISomeClass::setInt, i ); }
+   void setAnotherInt( int i ) override
       { call( &ISomeClass::setAnotherInt, i ); }
-   virtual void setIntConst( int i ) const
+   void setIntConst( int i ) const override
       { call( &ISomeClass::setIntConst, i ); }
-   virtual int getInt() const { return call( &ISomeClass::getInt ); }
-   virtual void getIntByRef( int& ir ) { call( &ISomeClass::getIntByRef, ir ); }
-   virtual void setIntPtr( int* ip ) { call( &ISomeClass::setIntPtr, ip ); }
-   virtual void setClass( ISomeClass* scp )
+   int getInt() const override { return call( &ISomeClass::getInt ); }
+   void getIntByRef( int& ir ) override
+      { call( &ISomeClass::getIntByRef, ir ); }
+   void setIntPtr( int* ip ) override { call( &ISomeClass::setIntPtr, ip ); }
+   void setClass( ISomeClass* scp ) override
       { call( &ISomeClass::setClass, scp ); }
-   virtual void setStrPtr( const char* ccp )
+   void setStrPtr( const char* ccp ) override
       { call( &ISomeClass::setStrPtr, ccp ); }
-   virtual void setConstRefUPtr( const std::unique_ptr<int>& uip )
+   void setConstRefUPtr( const std::unique_ptr<int>& uip ) override
       { call( &ISomeClass::setConstRefUPtr, uip ); }
-   virtual void setUPtr( std::unique_ptr<int> uip )
+   void setUPtr( std::unique_ptr<int> uip ) override
       { call( &ISomeClass::setUPtr, std::move( uip ) ); }
-   virtual void setSPtr( std::shared_ptr<int> sip )
+   void setSPtr( std::shared_ptr<int> sip ) override
       { call( &ISomeClass::setSPtr, sip ); }
-   virtual std::unique_ptr<int> getUPtr() const
+   std::unique_ptr<int> getUPtr() const override
       { return call( &ISomeClass::getUPtr ); }
-   virtual std::string getStr()
+   std::string getStr() override
       { return call( &ISomeClass::getStr ); }
-   virtual std::string getStr() const
+   std::string getStr() const override
       { return call( &ISomeClass::getStr ); }
 };
 
 class SomeClassStub : public ISomeClass
 {
 public:
-   virtual void setInt( int i ) {}
-   virtual void setAnotherInt( int i ) {}
-   virtual void setIntConst( int i ) const {}
-   virtual int getInt() const { return 42; }
-   virtual void getIntByRef( int& ir ) { ir = 45; }
-   virtual void setIntPtr( int* ip ) {}
-   virtual void setClass( ISomeClass* scp ) {}
-   virtual void setStrPtr( const char* ccp ) {}
-   virtual void setConstRefUPtr( const std::unique_ptr<int>& uip ) {}
-   virtual void setUPtr( std::unique_ptr<int> uip ) {}
-   virtual void setSPtr( std::shared_ptr<int> sip ) {}
-   virtual std::unique_ptr<int> getUPtr() const
+   void setInt( int i ) override {}
+   void setAnotherInt( int i ) override {}
+   void setIntConst( int i ) const override {}
+   int getInt() const override { return 42; }
+   void getIntByRef( int& ir ) override { ir = 45; }
+   void setIntPtr( int* ip ) override {}
+   void setClass( ISomeClass* scp ) override {}
+   void setStrPtr( const char* ccp ) override {}
+   void setConstRefUPtr( const std::unique_ptr<int>& uip ) override {}
+   void setUPtr( std::unique_ptr<int> uip ) override {}
+   void setSPtr( std::shared_ptr<int> sip ) override {}
+   std::unique_ptr<int> getUPtr() const override
       { return std::make_unique<int>( 50 ); }
-   virtual std::string getStr() { return "non-const"; }
-   virtual std::string getStr() const { return "const"; }
+   std::string getStr() override { return "non-const"; }
+   std::string getStr() const override { return "const"; }
 };
 
 struct SomeConversionPolicy

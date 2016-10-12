@@ -40,15 +40,15 @@ class SomeClassMock : public unimock::Mock<ISomeClass>
 {
 public:
    using unimock::Mock<ISomeClass>::Mock;
-   virtual std::string getStr() { return call( &ISomeClass::getStr ); }
-   virtual std::string getStr() const { return call( &ISomeClass::getStr ); }
+   std::string getStr() override { return call( &ISomeClass::getStr ); }
+   std::string getStr() const override { return call( &ISomeClass::getStr ); }
 };
 
 class SomeClassStub : public ISomeClass
 {
 public:
-   virtual std::string getStr() { return "non-const"; }
-   virtual std::string getStr() const { return "const"; }
+   std::string getStr() override { return "non-const"; }
+   std::string getStr() const override { return "const"; }
 };
 
 } // unnamed namespace

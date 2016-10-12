@@ -22,10 +22,10 @@ public:
 
    GasStove3000();
 
-   virtual void turnOnBurner( int level );
-   virtual void turnOffBurner();
-   virtual void turnOnOven( int temperature );
-   virtual void turnOffOven();
+   void turnOnBurner( int level ) override;
+   void turnOffBurner() override;
+   void turnOnOven( int temperature ) override;
+   void turnOffOven() override;
 
 };
 

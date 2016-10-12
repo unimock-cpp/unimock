@@ -22,13 +22,13 @@ public:
 
    CoolFood();
 
-   virtual void getTomatoes();
-   virtual void getPeanuts();
-   virtual void getEggs();
-   virtual void getFish();
-   virtual void getBlackPepper();
-   virtual void getTabasco();
-   virtual void getRedSavinaHabanero();
+   void getTomatoes() override;
+   void getPeanuts() override;
+   void getEggs() override;
+   void getFish() override;
+   void getBlackPepper() override;
+   void getTabasco() override;
+   void getRedSavinaHabanero() override;
 
 };
 

@@ -46,16 +46,16 @@ public:
 class SomeClass : public ISomeClass
 {
 public:
-   virtual void setIntStr( int i, std::string s ) {}
-   virtual void setIntStrConst( int i, std::string s ) const {}
-   virtual void setInt( int i ) {}
-   virtual void setInt( int i ) const {}
-   virtual void setDouble( double d ) {}
-   virtual void setAnotherDouble( double d ) {}
-   virtual void setIntPtr( int* ip ) {};
-   virtual void setConstRefUPtr( const std::unique_ptr<int>& uip ) {}
-   virtual void setUPtr( std::unique_ptr<int> uip ) {}
-   virtual void setSPtr( std::shared_ptr<int> sip ) {}
+   void setIntStr( int i, std::string s ) override {}
+   void setIntStrConst( int i, std::string s ) const override {}
+   void setInt( int i ) override {}
+   void setInt( int i ) const override {}
+   void setDouble( double d ) override {}
+   void setAnotherDouble( double d ) override {}
+   void setIntPtr( int* ip ) override {};
+   void setConstRefUPtr( const std::unique_ptr<int>& uip ) override {}
+   void setUPtr( std::unique_ptr<int> uip ) override {}
+   void setSPtr( std::shared_ptr<int> sip ) override {}
 };
 
 } // unnamed namespace
