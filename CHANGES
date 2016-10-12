@@ -1,5 +1,24 @@
 ________________________________________________________________________________
 
+Unimock v0.3.2
+________________________________________________________________________________
+
+Changes:
+   - None
+
+New Features:
+   - None
+
+Fixes:
+   - Replaced the 'virtual' keyword with the 'override' specifier in classes
+     implementing an interface, making the code more robust.
+
+Known issues:
+   - None
+
+
+________________________________________________________________________________
+
 Unimock v0.3.1
 ________________________________________________________________________________
 
